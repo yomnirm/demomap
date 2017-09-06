@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="mapsApp">
+<head>
+<meta charset="utf-8">
+<title>DemoApp</title>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/maps.css">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
+
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&language=en"></script>
+<script type="text/javascript" src="js/map.js"></script>
+</head>
+<body>
+<div ng-controller="MapCtrl">
+    <div id="map"></div>
+	
+	
+    <label id="choose" >Choose City : </label>
+    <div id="repeat" ng-repeat="marker in markers | orderBy : 'title'">
+        <a id="country_container" href="#" ng-click="openInfoWindow($event, marker)"> 
+         <label id="names" >{{marker.title}}</label>
+        </a>
+    </div>
+			
+	<label id="contact" class="margin-on-contact">Contact <a href="call@04800" onclick="alert('Call 04800 for any Branch/ATM related informations'); return false;">04800</a> for any Branch related Information </label>
+   
+    <!-- Start lower divs -->
+    
+    <div class="panel panel-default">
+      <div class="panel-body">
+          
+        <form class="form-horizontal" role="form">
+        <table>
+         <tr>
+         <td class="padding-on-right">
+          <div class="">
+            <label for="origin" class="">Origin: </label>
+            
+              <input type="text" ng-readonly="true" id="origin" class="" ng-model="directions.origin" />
+            
+          </div>
+        </td>  
+             
+        <td class="padding-on-right">
+         <div class="">
+			<label for="destination" class="">Destination Branch: </label>	
+			
+			<select ng-model="selectedBranch" ng-change=""> 
+				<option ng-repeat="x in branches" value="{{x.id}}">{{x.address}}</option>
+			</select>
+			
+	        </div>
+        </td>
+			 
+		
+		<td class="padding-on-right">  
+      
+			<div class="">
+			<label for="destination" class="">Travel Mode: </label>	
+			
+			<select ng-model="travelMode" ng-change="onTravleModeChange()"> 
+				<option ng-repeat="x in travelModes" value="{{x.mode}}">{{x.mode}}</option>
+			</select>
+			 
+	        </div>		
+			  
+          
+          </td>
+             
+        </tr>
+          <tr>
+            <td>  
+     
+					  
+          </td>
+          </tr>
+            </table> 
+        <table class="tftable">
+            
+            <tr>
+              <td>
+            <div class="">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-primary" ng-click="getDirections()">Get Directions</button>
+			  
+		    </div>
+            </div>
+                  
+            </td>
+          
+            </tr>
+        </table>    
+		
+              
+        </form>
+        </div>
+		
+        <div id="directionsList" style="display: none;" class="panel panel-primary"></div>
+      
+    </div>
+</div>
+	
+<!--<footer>
+  <p>Contact information: <a href="mailto:someone@example.com">someone@example.com</a>.</p>
+</footer>-->
+	
+</body>
+</html>
