@@ -1,12 +1,30 @@
 body {
     font: bold 12px Arial;
      }
+
+h6 {
+    
+}
+
 a {
     text-decoration: none;
   }
 
 .padding-on-right {
 	padding-right: 50px;
+}
+
+.googft-info-window td { background-color: yellow }
+
+#infoWindowContent .infoWindowTitle {
+   font-family: 'Open Sans Condensed', sans-serif;
+   font-size: 22px;
+   font-weight: 400;
+   padding: 10px;
+   background-color: #48b5e9;
+   color: white;
+   margin: 1px;
+   border-radius: 2px 2px 0 0;
 }
 
 .margin-on-contact {
@@ -21,7 +39,7 @@ a {
 
 
 #map{
-    height:540px; 
+    height:590px; 
     width:100%; 
     box-shadow: 3px 3px 10px gray;
     }
