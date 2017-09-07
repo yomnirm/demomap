@@ -105,7 +105,10 @@ var branches = {
             		//theMap.setCenter(pos);
 				    currentLocationLat = pos.lat;
 					currentLocationLong = pos.lng;
-					// As derived from the geo location location
+					/* Comment the below two lines to get the google geolocation
+				          Values have been picked up from gelocation which showed Oslo during development :)
+					  currently hard coded for demo purpose as i am sitting in Bergen
+					*/	
 					currentLocationLat = '59.91528509999999';
 					currentLocationLong = '10.7587669';
 					console.log("Current Location : " + currentLocationLat + " " + currentLocationLong);
