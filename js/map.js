@@ -128,6 +128,7 @@ var branches = {
                   var marker = new google.maps.Marker({
                       map: theMap,
                       position: new google.maps.LatLng(info.latitude, info.longitude),
+		      animation: google.maps.Animation.DROP,	  
                       title: info.city
                   });
                   marker.content = '<div class="infoWindowContent">' + info.desc + '</div>';
@@ -210,7 +211,8 @@ var branches = {
                      var markers = new google.maps.Marker({
                      position: new google.maps.LatLng(branchObj[i].latitude, branchObj[i].longitude),
                      map: theMap,
-                     title: 'Click to show directions'
+                     animation: google.maps.Animation.DROP,		 
+                     title: branchObj[i].branchName
                      
                          
                  });  
