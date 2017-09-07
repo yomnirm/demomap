@@ -55,11 +55,18 @@ var branches = {
 
     //Angular App Module and Controller
           var sampleApp = angular.module('mapsApp', []);
-          sampleApp.controller('MapCtrl', function ($scope) {
+          
+         sampleApp.config(['$httpProvider',
+				function($httpProvider) {
+				delete $httpProvider.defaults.headers.common['X-Requested-With'];
+		   }
+        ]);
+
+          sampleApp.controller('MapCtrl', function ($scope, $http) {
 
               var mapOptions = {
                   center: new google.maps.LatLng(60.472024,8.468946),
-                  mapTypeId: google.maps.MapTypeId.ROADMAP,
+                  mapTypeId: 'roadmap',
                   
                   control: {},
                   
@@ -92,14 +99,17 @@ var branches = {
               				lng: position.coords.longitude
 						  };
 
-            		infoWindow.setPosition(pos);
+            		/*infoWindow.setPosition(pos);
             		infoWindow.setContent('You are here :)');
-            		infoWindow.open(theMap);
-            		theMap.setCenter(pos);
+            		infoWindow.open(theMap);*/
+            		//theMap.setCenter(pos);
 				    currentLocationLat = pos.lat;
 					currentLocationLong = pos.lng;
+					// As derived from the geo location location
+					currentLocationLat = '59.91528509999999';
+					currentLocationLong = '10.7587669';
 					console.log("Current Location : " + currentLocationLat + " " + currentLocationLong);
-						  currentLocationLat
+						  
           		}, function() {
             		handleLocationError(true, infoWindow, theMap.getCenter());
           		});
@@ -120,16 +130,29 @@ var branches = {
 			 
 			   //
 			  getCurrentLocation(theMap, infoWindow);
+			  
+			  var showCurrentLocation = function(){
+				  
+				  var marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(currentLocationLat,currentLocationLong),
+                  map: theMap,
+                  title: 'Here I am!',
+				  icon: 'icons/person.png',
+				  animation: google.maps.Animation.BOUNCE	  
+                 });
+			  }
 			 
               var cityMarkers = [];
+			  var branchMarkers = [];
               var createMarker = function (info){
                   
 				  var anyObject;
                   var marker = new google.maps.Marker({
                       map: theMap,
                       position: new google.maps.LatLng(info.latitude, info.longitude),
-		      animation: google.maps.Animation.DROP,	  
-                      title: info.city
+					  animation: google.maps.Animation.DROP,
+                      title: info.city,
+					  icon: 'icons/city.png'
                   });
                   marker.content = '<div class="infoWindowContent">' + info.desc + '</div>';
                   
@@ -162,6 +185,7 @@ var branches = {
 				  clearCityMarkers();
 				  var branchObj;
                  
+				 //clearBranchMarkers() 
                  if(selectedCity === "Bergen"){
                      
                      branchObj = branches.Bergen;
@@ -170,7 +194,8 @@ var branches = {
                   else if(selectedCity === "Oslo"){
                           
                      branchObj = branches.Oslo;  
-                     createBranches(branchObj);   
+                     createBranches(branchObj);
+					 showCurrentLocation(); 
                  }
 				 
 				 else if(selectedCity === "Stavanger"){
@@ -200,6 +225,12 @@ var branches = {
         		  cityMarkers[i].setMap(null);
 			  }
             }
+			  
+			  function clearBranchMarkers() {
+				  for(i=0; i<branchMarkers.length; i++){
+        		  cityMarkers[i].setMap(null);
+				  }
+			  }
               
               var createBranches = function(branchObj){
 				  
@@ -211,9 +242,9 @@ var branches = {
                      var markers = new google.maps.Marker({
                      position: new google.maps.LatLng(branchObj[i].latitude, branchObj[i].longitude),
                      map: theMap,
-                     animation: google.maps.Animation.DROP,		 
-                     title: branchObj[i].branchName
-                     
+				     animation: google.maps.Animation.DROP,		 
+                     title: branchObj[i].branchName,
+                     icon: 'icons/bank.png'
                          
                  });  
 					  
@@ -224,12 +255,16 @@ var branches = {
 						  
 				  });*/
                       
+					  branchMarkers.push(markers);
 					  $scope.branches.push({"id" : branchObj[i].branchID , "address" : branchObj[i].branchName });
-					  var content = '<div class="infoWindowContent">' + branchObj[i].branchAddress + '<br>' + branchObj[i].city + '&nbsp' + branchObj[i].zipCode + '<br>' + "Branch Id: " + branchObj[i].branchID + '</div>';
+					  var content1 = '<div class="infoWindowTitle"> <h6>' + branchObj[i].branchName + '</h6></div>';
+					  
+					  var content = '<div id="infoWindowContent">' + branchObj[i].branchAddress + '<br>' + branchObj[i].city + '&nbsp' + branchObj[i].zipCode + '<br>' + "Branch Id: " + branchObj[i].branchID + '</div>';
                      
                      
                       google.maps.event.addListener(markers, 'click', (function(markers, content, branchInfoWindow){
-                      branchInfoWindow.setContent('<h6>' + branchObj[i].branchName + '</h6>' + content);
+                      branchInfoWindow.setContent('<h5>' + branchObj[i].branchName + '</h5>' + content);
+					  //branchInfoWindow.setContent(content1 + content);	  
                       branchInfoWindow.open(theMap, markers);
                       //theMap.panTo(markers.getPosition());
                       theMap.setZoom(12);
@@ -289,12 +324,18 @@ var branches = {
  };	
 			  
  var modeofTravel = 'DRIVING';
+ var mapMode;			  
 			  
  $scope.onTravleModeChange = function(){
 	 modeofTravel = $scope.travelMode;
 	 $scope.getDirections();
  };				  
-			  
+
+ $scope.onMapModeChange = function(){
+	 mapMode = $scope.mapMode;
+	 mapMode = mapMode.toLowerCase();
+	 theMap.setMapTypeId(mapMode);
+ };				  
               
   // instantiate google map objects for directions
 		  
@@ -317,6 +358,14 @@ var branches = {
 	{mode : "BICYCLING"},
 	{mode : "TRANSIT"}
   ]
+
+  $scope.mapModes = [
+	{mode : "ROADMAP"}, 
+	{mode : "SATELLITE"},
+	{mode : "HYBRID"},
+	{mode : "TERRAIN"}
+  ]			  
+			  
   // get directions using google maps api
     
     //var start = new google.maps.LatLng('60.465978', '5.322385');
@@ -362,6 +411,20 @@ var branches = {
 	 
   }
               
-              
+      // Making ajax call to API       
+/*  console.log("Initiating request...");  
+    $http({
+      method: 'GET',
+      url: 'https://dnbapistore.com/hackathon/banks/1.0/bank/branch/zip/1364',
+      headers: {'Authorization': 'Bearer 340ce3e3-db48-350b-a267-44706fa584ed',
+			    'Accept': 'application/json'},
+		
+  }).then(function successCallback(response) {
+     console.log("Success in call : " + response.status);
+	 console.log("Data : " + response.data.branches[0].branchID);	
+  }, function errorCallback(response) {
+     console.log("Error in call" + response.status);
+  });*/
+  
               
 });
