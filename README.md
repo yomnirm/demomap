@@ -12,3 +12,6 @@ hackathon demo application
 7. Click on Allow to grant location access to the map and you are good to go 
 
 Alterantively, just go to the folder and open map.html in a broswer(I used Chrome). Most easy way!!
+
+
+For any issues please drop a message under : https://github.com/yomnirm/demomap/issues
